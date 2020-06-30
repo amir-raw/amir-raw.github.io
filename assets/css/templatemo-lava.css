@@ -279,10 +279,10 @@ header
 .header-area .main-nav .logo {
   line-height: 80px;
   color: #191a20;
-  font-size: 27px;
+  font-size: 28px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   float: left;
   -webkit-transition: all 0.3s ease 0s;
   -moz-transition: all 0.3s ease 0s;
@@ -292,8 +292,8 @@ header
 
 
 .header-area .main-nav .nav {
-  float: right;
-  margin-top: 25px;
+  float: left;
+  margin-top: 27px;
   margin-left: 15%;
   margin-right: 0px;
   background-color: #fff;
@@ -318,7 +318,7 @@ header
 .header-area .main-nav .nav li a {
   display: block;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 13px;
   color: #7a7a7a;
   text-transform: uppercase;
   -webkit-transition: all 0.3s ease 0s;
@@ -550,7 +550,19 @@ header
     display: none;
   }
 }
-
+@media (max-width: 411px) {
+   .logo {
+    text-align: center;
+    font-size: 13px;
+    float: none!important;
+  } 
+    
+}
+@media only screen and (min-width: 411px){
+    .logo {
+     } 
+    
+}
 @media (max-width: 991px) {
   .logo {
     text-align: center;
@@ -657,7 +669,7 @@ welcome
   width: 100%;
   height: 100vh;
   min-height: 793px;
-  background-image: url(../images/banner-bg1.png);
+  background-image: url(../images/banner-bg.png);
   background-repeat: no-repeat;
   background-position: right top;
 }
@@ -671,11 +683,10 @@ welcome
 
 .welcome-area .header-text h1 {
   font-weight: 900;
-  font-size: 48px;
+  font-size: 52px;
   line-height: 80px;
   letter-spacing: 1px;
-  margin-bottom: 0px;
-    margin-top: 10px;
+  margin-bottom: 30px;
   color: #191a20;
 }
 
@@ -685,8 +696,8 @@ welcome
 }
 
 .welcome-area .header-text p {
-  font-weight: 500;
-  font-size: 15px;
+  font-weight: 300;
+  font-size: 17px;
   color: #7a7a7a;
   line-height: 30px;
   letter-spacing: 0.25px;
@@ -717,10 +728,10 @@ welcome
   }
   .welcome-area .header-text {       
     width: 92%;
-    padding-top: 10px;
+    padding-top: 793px;
   }
   .welcome-area .header-text .left-text {
-    margin-top: 0%;
+    margin-top: 5%;
     transform: none !important;
   }
 }
@@ -739,22 +750,7 @@ welcome
     padding-right: 0px;
   }
 }
-@media (min-width: 411px) {
-  
-    .welcome-area {
-    background-size: 150%
-  }
 
-  .welcome-area .header-text {
-    padding-top: 120%;
-    margin-left: 0;
-  }
-    
-  .container-fluid .col-md-12 {
-    margin-right: 0px;
-    padding-right: 0px;
-  }
-}
 
 /*
 ---------------------------------------------
@@ -982,7 +978,6 @@ footer
       color: darkblue;
   }
 }
-
 @media (max-width: 992px) {
   footer {
     padding-top: 0px!important;
