@@ -981,6 +981,7 @@ footer
   .footer-content .right-content h2 {
       color: darkblue;
   }
+}
 
 @media (max-width: 992px) {
   footer {
