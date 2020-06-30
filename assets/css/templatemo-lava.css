@@ -739,6 +739,22 @@ welcome
     padding-right: 0px;
   }
 }
+@media (min-width: 411px) {
+  
+    .welcome-area {
+    background-size: 150%
+  }
+
+  .welcome-area .header-text {
+    padding-top: 120%;
+    margin-left: 0;
+  }
+    
+  .container-fluid .col-md-12 {
+    margin-right: 0px;
+    padding-right: 0px;
+  }
+}
 
 /*
 ---------------------------------------------
