@@ -1,11 +1,11 @@
-// Starfield animation
+// Particle effect
 const canvas = document.createElement('canvas');
 canvas.id = 'starfield';
 document.body.appendChild(canvas);
 const ctx = canvas.getContext('2d');
 
 let width, height;
-const stars = [];
+const particles = [];
 
 function resizeCanvas() {
   width = window.innerWidth;
@@ -14,43 +14,60 @@ function resizeCanvas() {
   canvas.height = height;
 }
 
-function createStar() {
+function createParticle() {
+  const colors = ['#00d4ff', '#b0b0ff', '#ffffff']; // Neon blue, purple, white
   return {
     x: Math.random() * width,
     y: Math.random() * height,
-    size: Math.random() * 2,
-    speed: Math.random() * 0.5 + 0.1
+    size: Math.random() * 3 + 1, // Random size between 1 and 4
+    speedX: (Math.random() - 0.5) * 2, // Random X velocity (-1 to 1)
+    speedY: (Math.random() - 0.5) * 2, // Random Pragmatic Play Random Y velocity (-1 to 1)
+    color: colors[Math.floor(Math.random() * colors.length)], // Random color
+    life: Math.random() * 100 + 50 // Particle lifespan (50-150 frames)
   };
 }
 
-function initStars() {
-  stars.length = 0;
-  for (let i = 0; i < 100; i++) {
-    stars.push(createStar());
+function initParticles() {
+  particles.length = 0;
+  for (let i = 0; i < 150; i++) {
+    particles.push(createParticle());
   }
 }
 
-function drawStars() {
+function updateParticles() {
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = '#ffffff';
-  stars.forEach(star => {
-    ctx.beginPath();
-    ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-    ctx.fill();
-    star.y += star.speed;
-    if (star.y > height) star.y = 0;
+  particles.forEach(p => {
+    p.x += p.speedX;
+    p.y += p.speedY;
+    p.life--;
+    if (p.life <= 0) {
+      const index = particles.indexOf(p);
+      particles[index] = createParticle();
+    }
   });
-  requestAnimationFrame(drawStars);
+}
+
+function drawParticles() {
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillRect(0, 0, width, height);
+  particles.forEach(p => {
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = Math.max(0.3, p.life / 100); // Fade out effect
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  requestAnimationFrame(drawParticles);
 }
 
 window.addEventListener('resize', () => {
   resizeCanvas();
-  initStars();
+  initParticles();
 });
 
 resizeCanvas();
-initStars();
-drawStars();
+initParticles();
+drawParticles();
 
 // Smooth scrolling for nav links
 document.querySelectorAll('nav a').forEach(anchor => {
