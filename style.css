@@ -1,14 +1,14 @@
-
+/* Premium Gradient Theme – No timestamps */
 :root {
-  --gradient-start: #1e1b4b;    /* Deep indigo (like Tailwind's slate/indigo) */
-  --gradient-end: #4f46e5;      /* Vibrant indigo */
-  --chat-bg: #f8fafc;           /* Soft light background */
+  --gradient-start: #1e1b4b;
+  --gradient-end: #4f46e5;
+  --chat-bg: #f8fafc;
   --received-bg: #ffffff;
-  --sent-bg: #e0f2fe;           /* Soft blue instead of green */
+  --sent-bg: #e0f2fe;
   --text-primary: #1e293b;
   --text-secondary: #64748b;
   --input-bg: #f1f5f9;
-  --link-color: #4f46e5;        /* Matches gradient end */
+  --link-color: #4f46e5;
 }
 
 * {
@@ -39,7 +39,6 @@ body {
   margin-bottom: 20px;
 }
 
-/* Header with gradient */
 .whatsapp-header {
   background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
   color: white;
@@ -83,7 +82,6 @@ body {
   opacity: 0.9;
 }
 
-/* Chat messages */
 .chat-body {
   flex: 1;
   padding: 18px;
@@ -93,7 +91,7 @@ body {
 
 .message {
   display: flex;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
   max-width: 85%;
 }
 
@@ -125,19 +123,6 @@ body {
   color: var(--text-primary);
 }
 
-.message time {
-  font-size: 0.72rem;
-  color: var(--text-secondary);
-  margin-top: 5px;
-  padding: 0 6px;
-  align-self: flex-end;
-}
-
-.message.received time {
-  padding-left: 56px;
-}
-
-/* Links */
 .message-bubble a {
   color: var(--link-color);
   text-decoration: none;
@@ -148,7 +133,6 @@ body {
   text-decoration: underline;
 }
 
-/* Input bar */
 .whatsapp-input {
   background-color: white;
   padding: 10px 14px;
@@ -166,7 +150,6 @@ body {
   font-size: 1.4rem;
   color: var(--text-secondary);
   padding: 0 12px;
-  cursor: default;
 }
 
 .whatsapp-input input {
@@ -181,7 +164,6 @@ body {
   outline: none;
 }
 
-/* Footer */
 .site-footer {
   text-align: center;
   padding: 18px;
@@ -190,7 +172,6 @@ body {
   background: transparent;
 }
 
-/* Responsive */
 @media (max-width: 600px) {
   .whatsapp-container {
     margin: 0;
@@ -200,6 +181,7 @@ body {
 
   .message {
     max-width: 90%;
+    margin-bottom: 16px;
   }
 
   .avatar {
