@@ -1,183 +1,201 @@
-/* Reset default styles */
+/* Spotify Theme Variables */
+:root {
+  --spotify-black: #000000;
+  --spotify-white: #FFFFFF;
+  --spotify-green: #1DB954;
+  --spotify-gray: #535353;
+  --spotify-light-gray: #B3B3B3;
+  --border-radius: 8px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Base Styles */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* Body and global styles */
 body {
-  background: #0a0a0f;
-  color: #e0e0e0;
-  font-family: 'Orbitron', sans-serif; /* Futuristic font */
+  font-family: 'Circular Std', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--spotify-black);
+  color: var(--spotify-white);
   line-height: 1.6;
-  overflow-x: hidden;
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Starfield canvas */
-#starfield {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-}
-
-/* Header */
 header {
   text-align: center;
-  padding: 4rem 2rem;
-  background: linear-gradient(180deg, rgba(10, 10, 15, 0.9), transparent);
+  padding: 40px 20px;
+  background: linear-gradient(to bottom, var(--spotify-black), #121212);
+  border-bottom: 1px solid var(--spotify-gray);
 }
 
-header h1 {
-  font-size: 3.5rem;
-  color: #00d4ff;
-  text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff;
-  animation: glow 2s ease-in-out infinite alternate;
+h1 {
+  /* Green rounded box for name */
+  background-color: var(--spotify-green);
+  color: var(--spotify-black);
+  font-weight: 700;
+  font-size: 2.5em;
+  padding: 15px 30px;
+  border-radius: 50px; /* Pill shape for rounded corners */
+  display: inline-block;
+  margin-bottom: 10px;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+h1:hover {
+  transform: scale(1.02);
+  box-shadow: 0 6px 20px rgba(29, 185, 84, 0.4);
 }
 
 header p {
-  font-size: 1.2rem;
-  color: #b0b0ff;
-  margin: 1rem 0;
+  font-size: 1.2em;
+  color: var(--spotify-light-gray);
+  margin-bottom: 30px;
 }
 
 nav {
-  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 nav a {
-  color: #e0e0e0;
+  color: var(--spotify-white);
   text-decoration: none;
-  margin: 0 1.5rem;
-  font-size: 1.1rem;
-  transition: color 0.3s, text-shadow 0.3s;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-weight: 500;
 }
 
 nav a:hover {
-  color: #00d4ff;
-  text-shadow: 0 0 8px #00d4ff;
+  background-color: var(--spotify-green);
+  color: var(--spotify-black);
 }
 
 /* Sections */
 section {
-  padding: 4rem 2rem;
-  max-width: 800px;
-  margin: 0 auto;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-section.visible {
-  opacity: 1;
-  transform: translateY(0);
+  margin: 60px 0;
+  padding: 30px;
+  background: #121212;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
 }
 
 h2 {
-  font-size: 2rem;
-  color: #00d4ff;
-  margin-bottom: 1.5rem;
-  text-shadow: 0 0 5px #00d4ff;
+  color: var(--spotify-green);
+  font-size: 2em;
+  margin-bottom: 20px;
+  text-align: center;
+  border-bottom: 2px solid var(--spotify-green);
+  padding-bottom: 10px;
+  display: inline-block;
 }
 
-/* Lists */
+p, ul, table {
+  font-size: 1.1em;
+  color: var(--spotify-light-gray);
+}
+
 ul {
   list-style: none;
+  padding-left: 0;
 }
 
 ul li {
-  margin: 1rem 0;
-  padding: 0.5rem;
-  border-left: 3px solid #00d4ff;
-  transition: background 0.3s, transform 0.3s;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid var(--spotify-green);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
-ul li:hover {
-  background: rgba(0, 212, 255, 0.1);
-  transform: translateX(10px);
+ul li b {
+  color: var(--spotify-white);
 }
 
-/* Table */
+/* Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--border-radius);
+  overflow: hidden;
 }
 
 th, td {
-  padding: 0.75rem;
+  padding: 12px;
   text-align: left;
-  border-bottom: 1px solid #00d4ff;
+  border-bottom: 1px solid var(--spotify-gray);
 }
 
 th {
-  color: #00d4ff;
-  text-shadow: 0 0 5px #00d4ff;
+  background-color: var(--spotify-green);
+  color: var(--spotify-black);
+  font-weight: 700;
 }
 
-td {
-  color: #e0e0e0;
+tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
 }
 
 tr:hover {
-  background: rgba(0, 212, 255, 0.1);
+  background: rgba(29, 185, 84, 0.1);
 }
 
-/* Contact links */
-#contact a {
-  color: #00d4ff;
+/* Links */
+a {
+  color: var(--spotify-green);
   text-decoration: none;
-  margin: 0 0.5rem;
-  transition: color 0.3s, text-shadow 0.3s;
+  transition: color 0.3s ease;
 }
 
-#contact a:hover {
-  color: #b0b0ff;
-  text-shadow: 0 0 8px #b0b0ff;
+a:hover {
+  color: var(--spotify-white);
+  text-decoration: underline;
 }
 
 /* Footer */
 footer {
   text-align: center;
-  padding: 2rem;
-  background: #0a0a0f;
-  color: #b0b0ff;
-  font-size: 0.9rem;
+  padding: 20px;
+  background: #121212;
+  color: var(--spotify-gray);
+  border-top: 1px solid var(--spotify-gray);
+  margin-top: 40px;
 }
 
-/* Glow animation */
-@keyframes glow {
-  from {
-    text-shadow: 0 0 10px #00d4ff, 0 0 20px #00d4ff;
-  }
-  to {
-    text-shadow: 0 0 20px #00d4ff, 0 0 30px #00d4ff;
-  }
-}
-
-/* Responsive design */
+/* Responsive Design */
 @media (max-width: 768px) {
-  header h1 {
-    font-size: 2.5rem;
+  body {
+    padding: 10px;
   }
-  nav a {
-    margin: 0 0.75rem;
-    font-size: 1rem;
-  }
-  section {
-    padding: 2rem 1rem;
-  }
-}
 
-#starfield {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  filter: blur(1px) brightness(1.2); /* Subtle glow and brightness for particles */
+  h1 {
+    font-size: 2em;
+    padding: 12px 24px;
+    width: 100%; /* Full-width box on mobile */
+    margin: 0 0 10px 0;
+  }
+
+  nav {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  section {
+    padding: 20px;
+    margin: 40px 0;
+  }
+
+  table {
+    font-size: 0.9em;
+  }
 }
