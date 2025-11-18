@@ -1,94 +1,411 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Amir Faiyaz | Research Portfolio</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="icon" href="assets/favicon.ico" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amir Faiyaz | AI Research</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', 'Times New Roman', serif;
+            background: #0a0a0a;
+            color: #e8e8e8;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            text-align: center;
+            opacity: 0;
+            animation: fadeInUp 1.2s ease forwards;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 7rem);
+            font-weight: 300;
+            letter-spacing: -0.03em;
+            margin-bottom: 1rem;
+            line-height: 0.9;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            font-weight: 300;
+            color: #888;
+            margin-top: 2rem;
+            letter-spacing: 0.05em;
+        }
+
+        /* Section Styling */
+        section {
+            min-height: 100vh;
+            padding: 120px 0;
+            position: relative;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s ease;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-number {
+            font-size: 1rem;
+            color: #444;
+            letter-spacing: 0.2em;
+            margin-bottom: 1rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .section-title {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 300;
+            margin-bottom: 3rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* About Section */
+        .about-text {
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            line-height: 1.8;
+            max-width: 900px;
+            font-weight: 300;
+            color: #b8b8b8;
+        }
+
+        /* Research Items */
+        .research-grid {
+            display: grid;
+            gap: 60px;
+            margin-top: 60px;
+        }
+
+        .research-item {
+            border-left: 2px solid #222;
+            padding-left: 40px;
+            transition: all 0.4s ease;
+        }
+
+        .research-item:hover {
+            border-left-color: #666;
+            transform: translateX(10px);
+        }
+
+        .research-item h3 {
+            font-size: clamp(1.5rem, 2.5vw, 2rem);
+            font-weight: 400;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .research-item p {
+            font-size: 1.1rem;
+            color: #888;
+            line-height: 1.6;
+        }
+
+        /* Publications */
+        .publication-list {
+            margin-top: 60px;
+        }
+
+        .publication-item {
+            display: flex;
+            gap: 40px;
+            padding: 40px 0;
+            border-bottom: 1px solid #1a1a1a;
+            transition: all 0.3s ease;
+        }
+
+        .publication-item:hover {
+            padding-left: 20px;
+            border-bottom-color: #333;
+        }
+
+        .pub-year {
+            font-size: 1.2rem;
+            color: #444;
+            min-width: 80px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .pub-title {
+            font-size: 1.3rem;
+            color: #e8e8e8;
+            line-height: 1.5;
+        }
+
+        /* Projects */
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .project-card {
+            background: #111;
+            padding: 40px;
+            border: 1px solid #222;
+            transition: all 0.4s ease;
+        }
+
+        .project-card:hover {
+            border-color: #444;
+            transform: translateY(-5px);
+            background: #151515;
+        }
+
+        .project-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .project-card p {
+            color: #888;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Contact */
+        .contact-content {
+            text-align: center;
+            padding: 80px 0;
+        }
+
+        .contact-links {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            margin-top: 60px;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            font-size: 1.3rem;
+            color: #e8e8e8;
+            text-decoration: none;
+            padding: 20px 40px;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .contact-link:hover {
+            border-color: #666;
+            background: #111;
+            transform: translateY(-2px);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hero-content {
+            transform: translateY(30px);
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: #444;
+            letter-spacing: 0.2em;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, 10px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+
+            .research-item {
+                padding-left: 20px;
+            }
+
+            .publication-item {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .project-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="whatsapp-container">
-    <!-- Header -->
-    <header class="whatsapp-header">
-      <div class="profile-info">
-        <div class="avatar">AF</div>
-        <div>
-          <h1>Amir Faiyaz</h1>
-          <p>Researcher • Federated AI & LLM Security</p>
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Amir Faiyaz</h1>
+            <p class="hero-subtitle">BUILDING TRUSTWORTHY AI SYSTEMS</p>
         </div>
-      </div>
-      <div class="header-icons">
-        <span>🔍</span>
-        <span>⋮</span>
-      </div>
-    </header>
+        <div class="scroll-indicator">SCROLL</div>
+    </div>
 
-    <!-- Chat-like content (no timestamps) -->
-    <main class="chat-body">
-      <!-- About -->
-      <div class="message received">
-        <div class="message-bubble">
-          <strong>About Me</strong><br>
-          I’m a PhD candidate at Texas Tech University specializing in Federated Learning, Large Language Models (LLMs), and privacy-preserving AI. My work focuses on building trustworthy, secure, and adaptive FL-LLM systems resilient against adversarial attacks.
+    <!-- About Section -->
+    <section id="about">
+        <div class="container">
+            <div class="section-number">01</div>
+            <h2 class="section-title">About</h2>
+            <p class="about-text">
+                I'm a PhD candidate at Texas Tech University specializing in Federated Learning, Large Language Models, and privacy-preserving AI. My work focuses on building trustworthy, secure, and adaptive FL-LLM systems resilient against adversarial attacks.
+            </p>
         </div>
-      </div>
+    </section>
 
-      <!-- Research -->
-      <div class="message received">
-        <div class="message-bubble">
-          <strong>Research</strong><br>
-          • <b>GradualDiff-Fed</b> — Gradual differential defense framework for federated LLMs.<br>
-          • <b>ShieldFed-LLM</b> — Adaptive layer-wise protection against model poisoning.<br>
-          • <b>AgeSafe AI</b> — Universal age-adaptive LLM for responsible AI interaction.
+    <!-- Research Section -->
+    <section id="research">
+        <div class="container">
+            <div class="section-number">02</div>
+            <h2 class="section-title">Research</h2>
+            <div class="research-grid">
+                <div class="research-item">
+                    <h3>GradualDiff-Fed</h3>
+                    <p>Gradual differential defense framework for federated LLMs, addressing security vulnerabilities in distributed learning environments.</p>
+                </div>
+                <div class="research-item">
+                    <h3>ShieldFed-LLM</h3>
+                    <p>Adaptive layer-wise protection against model poisoning, implementing sophisticated defense mechanisms for federated systems.</p>
+                </div>
+                <div class="research-item">
+                    <h3>AgeSafe AI</h3>
+                    <p>Universal age-adaptive LLM for responsible AI interaction, ensuring safe and appropriate AI responses across age groups.</p>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <!-- Publications -->
-      <div class="message received">
-        <div class="message-bubble">
-          <strong>Publications</strong><br>
-          • <b>2025</b> — GradualDiff-Fed: A specialized framework for Federated LLMs <br>
-          • <b>2025</b> — Privacy-Preserving LLM Collaboration via LoRA Aggregation <br>
-          • <b>2025</b> — AgeSafe AI: Toward Age-Adaptive Responsible Language Models
+    <!-- Publications Section -->
+    <section id="publications">
+        <div class="container">
+            <div class="section-number">03</div>
+            <h2 class="section-title">Publications</h2>
+            <div class="publication-list">
+                <div class="publication-item">
+                    <div class="pub-year">2025</div>
+                    <div class="pub-title">GradualDiff-Fed: A specialized framework for Federated LLMs</div>
+                </div>
+                <div class="publication-item">
+                    <div class="pub-year">2025</div>
+                    <div class="pub-title">Privacy-Preserving LLM Collaboration via LoRA Aggregation</div>
+                </div>
+                <div class="publication-item">
+                    <div class="pub-year">2025</div>
+                    <div class="pub-title">AgeSafe AI: Toward Age-Adaptive Responsible Language Models</div>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <!-- Projects -->
-      <div class="message received">
-        <div class="message-bubble">
-          <strong>Projects</strong><br>
-          • <b>FL-LLM Simulator</b> — Custom federated learning simulation for LLM defense benchmarking.<br>
-          • <b>Interactive RAG Chatbot</b> — 92% retrieval relevance with vector-based memory.<br>
-          • <b>Knowledge Distillation for Llama-2</b> — LRP-based layer-wise distillation strategy.
+    <!-- Projects Section -->
+    <section id="projects">
+        <div class="container">
+            <div class="section-number">04</div>
+            <h2 class="section-title">Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <h3>FL-LLM Simulator</h3>
+                    <p>Custom federated learning simulation for LLM defense benchmarking.</p>
+                </div>
+                <div class="project-card">
+                    <h3>Interactive RAG Chatbot</h3>
+                    <p>92% retrieval relevance with vector-based memory.</p>
+                </div>
+                <div class="project-card">
+                    <h3>Knowledge Distillation for Llama-2</h3>
+                    <p>LRP-based layer-wise distillation strategy.</p>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
 
-      <!-- Contact -->
-      <div class="message sent">
-        <div class="message-bubble">
-          <strong>Contact Me</strong><br>
-          📧 <a href="mailto:afaiyaz@ttu.edu">afaiyaz@ttu.edu</a><br>
-          🔗 <a href="https://github.com/amir-raw" target="_blank">GitHub</a> •
-          <a href="https://linkedin.com/in/amir-faiyaz" target="_blank">LinkedIn</a> •
-          <a href="https://scholar.google.com" target="_blank">Google Scholar</a>
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="section-number">05</div>
+            <h2 class="section-title">Contact</h2>
+            <div class="contact-content">
+                <div class="contact-links">
+                    <a href="mailto:afaiyaz@ttu.edu" class="contact-link">EMAIL</a>
+                    <a href="https://linkedin.com/in/amir-faiyaz" target="_blank" class="contact-link">LINKEDIN</a>
+                </div>
+            </div>
         </div>
-      </div>
-    </main>
+    </section>
 
-    <!-- Aesthetic input bar -->
-    <footer class="whatsapp-input">
-      <span>📎</span>
-      <input type="text" placeholder="Message Amir…" disabled />
-      <span>🎤</span>
-    </footer>
-  </div>
+    <script>
+        // Smooth scroll reveal animation
+        const sections = document.querySelectorAll('section');
+        
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px 0px -100px 0px'
+        };
 
-  <div class="site-footer">
-    <p>© 2025 Amir Faiyaz</p>
-  </div>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
 
-  <script src="script.js"></script>
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Smooth scrolling for links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
