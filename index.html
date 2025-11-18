@@ -25,6 +25,51 @@
             padding: 0 40px;
         }
 
+        /* Top Navigation Bar */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .logo {
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            color: #e8e8e8;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            padding: 10px 25px;
+            border: 1px solid #333;
+            background: transparent;
+            color: #e8e8e8;
+            font-size: 0.9rem;
+            letter-spacing: 0.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .nav-btn:hover {
+            border-color: #666;
+            background: #111;
+        }
+
         /* Hero Section */
         .hero {
             min-height: 100vh;
@@ -256,6 +301,19 @@
                 padding: 0 20px;
             }
 
+            .top-nav {
+                padding: 20px;
+            }
+
+            .nav-buttons {
+                gap: 10px;
+            }
+
+            .nav-btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+
             .research-item {
                 padding-left: 20px;
             }
@@ -272,6 +330,15 @@
     </style>
 </head>
 <body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="logo">AMIR FAIYAZ</div>
+        <div class="nav-buttons">
+            <a href="#about" class="nav-btn">ABOUT</a>
+            <a href="#contact" class="nav-btn">CONTACT</a>
+        </div>
+    </nav>
+
     <!-- Hero Section -->
     <div class="hero">
         <div class="hero-content">
@@ -367,6 +434,24 @@
                 <div class="contact-links">
                     <a href="mailto:afaiyaz@ttu.edu" class="contact-link">EMAIL</a>
                     <a href="https://linkedin.com/in/amir-faiyaz" target="_blank" class="contact-link">LINKEDIN</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Beyond Research Section -->
+    <section id="beyond">
+        <div class="container">
+            <div class="section-number">06</div>
+            <h2 class="section-title">Beyond Research</h2>
+            <div class="research-grid">
+                <div class="research-item">
+                    <h3>Hiking & Adventure</h3>
+                    <p>I love exploring adventurous places and hiking through nature, finding inspiration in the great outdoors.</p>
+                </div>
+                <div class="research-item">
+                    <h3>Esports Gaming</h3>
+                    <p>Former esports enthusiast with a passion for competitive gaming and the strategy behind it.</p>
                 </div>
             </div>
         </div>
