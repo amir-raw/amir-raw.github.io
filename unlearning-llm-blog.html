@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unlearning LLMs | Portfolio Blog</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:        #0d0e10;
+      --surface:   #13151a;
+      --border:    #222530;
+      --accent:    #c8a96e;
+      --accent2:   #6ea8c8;
+      --text:      #d8d5cc;
+      --muted:     #7a7870;
+      --code-bg:   #191c22;
+      --tag-bg:    #1c1f29;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Lora', Georgia, serif;
+      font-size: 17px;
+      line-height: 1.82;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 2.2rem 0 1.4rem;
+      text-align: center;
+      background: linear-gradient(180deg, #101218 0%, var(--bg) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% -10%, rgba(200,169,110,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .header-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 5vw, 3.8rem);
+      font-weight: 700;
+      line-height: 1.15;
+      color: #f0ede6;
+      letter-spacing: -0.01em;
+    }
+    header h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .header-sub {
+      margin-top: 0.9rem;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+    }
+    .header-tags {
+      margin-top: 1.2rem;
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .tag {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      padding: 0.22rem 0.7rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── LAYOUT ── */
+    .outer {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* ── TOC SIDEBAR ── */
+    .toc {
+      position: sticky;
+      top: 2rem;
+      padding: 1.6rem 0;
+      border-right: 1px solid var(--border);
+      padding-right: 1.6rem;
+    }
+    .toc-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+    .toc ol {
+      list-style: none;
+      counter-reset: toc;
+    }
+    .toc li {
+      counter-increment: toc;
+      margin-bottom: 0.5rem;
+    }
+    .toc a {
+      display: flex;
+      gap: 0.5rem;
+      align-items: baseline;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      text-decoration: none;
+      line-height: 1.5;
+      transition: color 0.2s;
+    }
+    .toc a::before {
+      content: counter(toc, decimal-leading-zero);
+      color: var(--border);
+      font-size: 0.62rem;
+      flex-shrink: 0;
+    }
+    .toc a:hover { color: var(--accent); }
+
+    /* ── ARTICLE ── */
+    article {
+      padding: 2.8rem 0 4rem;
+    }
+
+    /* SECTION DIVIDER */
+    .section-break {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 3.4rem 0 1.8rem;
+    }
+    .section-break::before {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .section-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #f0ede6;
+      line-height: 1.25;
+      margin-bottom: 1.1rem;
+    }
+    h3 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--accent2);
+      margin: 2rem 0 0.7rem;
+    }
+
+    p { margin-bottom: 1.2rem; }
+    p:last-child { margin-bottom: 0; }
+
+    strong { color: #f0ede6; font-weight: 500; }
+    em { font-style: italic; color: var(--accent); }
+
+    /* ── CALLOUT BOXES ── */
+    .callout {
+      border-left: 3px solid var(--accent);
+      background: var(--surface);
+      padding: 1rem 1.4rem;
+      margin: 1.6rem 0;
+      font-size: 0.95rem;
+    }
+    .callout.blue { border-color: var(--accent2); }
+    .callout-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.4rem;
+    }
+    .callout.blue .callout-label { color: var(--accent2); }
+
+    /* ── METHOD CARDS ── */
+    .method-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 1.6rem 0;
+    }
+    .method-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.2rem 1.4rem;
+      position: relative;
+    }
+    .method-card::before {
+      content: attr(data-num);
+      position: absolute;
+      top: 0.9rem;
+      right: 1rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--border);
+    }
+    .method-card h4 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+    .method-card p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* ── CHALLENGE PILLS ── */
+    .challenge-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      margin: 1.4rem 0;
+    }
+    .challenge-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1rem;
+      align-items: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.9rem 1.2rem;
+    }
+    .challenge-icon {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--accent);
+      margin-top: 0.15rem;
+      letter-spacing: 0.05em;
+    }
+    .challenge-item p { font-size: 0.9rem; margin: 0; line-height: 1.6; }
+    .challenge-item strong { color: var(--text); }
+
+    /* ── BENCHMARK TABLE ── */
+    .bench-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin: 1.6rem 0;
+    }
+    .bench-table th {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border-bottom: 1px solid var(--border);
+      padding: 0.6rem 0.8rem;
+      text-align: left;
+    }
+    .bench-table td {
+      padding: 0.75rem 0.8rem;
+      border-bottom: 1px solid #191c22;
+      vertical-align: top;
+      line-height: 1.55;
+    }
+    .bench-table tr:last-child td { border-bottom: none; }
+    .bench-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--accent);
+    }
+
+    /* ── FORMULA BOX ── */
+    .formula {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      padding: 1rem 1.4rem;
+      margin: 1.4rem 0;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.82rem;
+      color: #9ec8e8;
+      overflow-x: auto;
+      line-height: 1.8;
+    }
+    .formula .comment { color: var(--muted); font-style: italic; }
+
+    /* ── REFERENCES ── */
+    .references {
+      margin-top: 4rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .ref-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.4rem;
+    }
+    .ref-list { list-style: none; }
+    .ref-list li {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.6rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid #191c22;
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+    .ref-list li:last-child { border-bottom: none; }
+    .ref-num {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 0.1rem;
+    }
+    .ref-list a {
+      color: var(--accent2);
+      text-decoration: none;
+    }
+    .ref-list a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 720px) {
+      .outer { grid-template-columns: 1fr; gap: 0; }
+      .toc { display: none; }
+      .method-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* decorative rule */
+    .ornament {
+      text-align: center;
+      color: var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.3em;
+      margin: 2.5rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+<header>
+  <p class="header-kicker">Portfolio Blog · AI & Machine Learning</p>
+  <h1>Unlearning <em>LLMs</em></h1>
+  <p class="header-sub">June 2026 &nbsp;·&nbsp; 12 min read</p>
+  <div class="header-tags">
+    <span class="tag">Machine Unlearning</span>
+    <span class="tag">LLM Safety</span>
+    <span class="tag">GDPR</span>
+    <span class="tag">AI Research</span>
+  </div>
+</header>
+
+<!-- ═══════════════════════════ BODY ═══════════════════════════ -->
+<div class="outer">
+
+  <!-- SIDEBAR TOC -->
+  <nav class="toc" aria-label="Table of contents">
+    <p class="toc-title">Contents</p>
+    <ol>
+      <li><a href="#intro">What is Unlearning?</a></li>
+      <li><a href="#why">Why Does It Matter?</a></li>
+      <li><a href="#setup">The Setup</a></li>
+      <li><a href="#benchmarks">Benchmarks</a></li>
+      <li><a href="#challenges">Challenges</a></li>
+      <li><a href="#methods">Key Methods</a></li>
+      <li><a href="#takeaway">Takeaway</a></li>
+      <li><a href="#references">References</a></li>
+    </ol>
+  </nav>
+
+  <!-- ARTICLE -->
+  <article>
+
+    <!-- ── 1. INTRO ── -->
+    <div class="section-break reveal" id="intro">
+      <span class="section-num">01 — Introduction</span>
+    </div>
+
+    <h2 class="reveal">What does it mean to make an AI forget?</h2>
+
+    <p class="reveal">
+      Imagine you trained a model on a massive dataset — billions of words scraped from the internet, books, medical records, code — and then discovered it had memorised someone's private address, or learned to explain how to synthesise a dangerous chemical. Deleting the data from your hard drive doesn't help. The knowledge is already baked into the model's weights.
+    </p>
+
+    <p class="reveal">
+      This is the core problem that <strong>machine unlearning</strong> tries to solve: how do you get a trained model to behave <em>as if it never saw certain data</em>, without retraining from scratch?
+    </p>
+
+    <div class="callout reveal">
+      <p class="callout-label">Simple Definition</p>
+      <p>Machine unlearning = efficiently modifying a trained model so that a specific piece of knowledge is removed, while everything else stays intact.</p>
+    </div>
+
+    <p class="reveal">
+      The naive answer — just retrain without the offending data — costs millions of dollars and weeks of compute for today's large language models. Unlearning is the practical alternative. It has exploded as a research topic in the last two years, driven by safety concerns, privacy laws, and the growing capability of LLMs to memorise things we'd rather they didn't.
+    </p>
+
+    <!-- ── 2. WHY ── -->
+    <div class="section-break reveal" id="why">
+      <span class="section-num">02 — Motivation</span>
+    </div>
+    <h2 class="reveal">Why does this matter?</h2>
+
+    <p class="reveal">
+      There are four concrete reasons the field cares about this:
+    </p>
+
+    <div class="challenge-list reveal">
+      <div class="challenge-item">
+        <span class="challenge-icon">PRIV</span>
+        <p><strong>Privacy & GDPR.</strong> Europe's General Data Protection Regulation (Article 17) grants citizens a "right to be forgotten" — meaning personal data must be erasable on request. But AI models don't store data in a database; knowledge lives diffusely across billions of parameters, making erasure legally required but technically hard. GDPR didn't anticipate LLMs when it was drafted, and the gap has become a real legal pressure point for AI companies.</p>
+      </div>
+      <div class="challenge-item">
+        <span class="challenge-icon">SAFE</span>
+        <p><strong>Safety.</strong> LLMs can sometimes be coaxed into producing instructions for dangerous activities — even after safety fine-tuning. Standard "refusal training" (teaching the model to say no) can be bypassed by rephrasing prompts, e.g. asking in the past tense. Unlearning offers a deeper fix: remove the hazardous knowledge itself, not just the willingness to share it.</p>
+      </div>
+      <div class="challenge-item">
+        <span class="challenge-icon">COPY</span>
+        <p><strong>Copyright.</strong> Models trained on books and articles can reproduce copyrighted text near-verbatim. Unlearning specific works (or authors) is one proposed path to compliance, as courts increasingly scrutinise what AI systems memorise.</p>
+      </div>
+      <div class="challenge-item">
+        <span class="challenge-icon">BIAS</span>
+        <p><strong>Bias & Moderation.</strong> Toxic, biased, or outdated content absorbed during pre-training can resurface in unexpected ways. Unlearning gives a way to clean this up post-hoc without touching the rest of the model's capabilities.</p>
+      </div>
+    </div>
+
+    <div class="callout blue reveal">
+      <p class="callout-label">Legal Context</p>
+      <p>As of 2025, the European Data Protection Board has ruled that AI developers can be considered data controllers under GDPR — but the regulation still lacks clear guidance on how erasure should be enforced inside AI model weights. This tension is driving a new wave of research into verifiable unlearning.</p>
+    </div>
+
+    <!-- ── 3. SETUP ── -->
+    <div class="section-break reveal" id="setup">
+      <span class="section-num">03 — Technical Setup</span>
+    </div>
+    <h2 class="reveal">The Setup: Three Datasets</h2>
+
+    <p class="reveal">
+      Almost every unlearning paper uses the same vocabulary. Before diving into methods, it helps to get the terminology straight:
+    </p>
+
+    <div class="method-grid reveal">
+      <div class="method-card" data-num="D_f">
+        <h4>Forget Set</h4>
+        <p>The examples you want erased. Could be dangerous chemistry Q&amp;As, memorised private info, or copyrighted text.</p>
+      </div>
+      <div class="method-card" data-num="D_r">
+        <h4>Retain Set</h4>
+        <p>Everything the model should still know. Used during training to make sure the model doesn't become dumb while forgetting.</p>
+      </div>
+      <div class="method-card" data-num="D_t">
+        <h4>Test Set</h4>
+        <p>Evaluation data. Checks both: did we forget what we wanted? Did we keep what we wanted?</p>
+      </div>
+      <div class="method-card" data-num="θ">
+        <h4>Frozen Reference Model</h4>
+        <p>A copy of the original model, kept fixed. Used by many methods as an anchor to prevent the model drifting too far.</p>
+      </div>
+    </div>
+
+    <p class="reveal">
+      The core optimisation goal is intuitive: <strong>push the model away</strong> from producing outputs related to the forget set, while <strong>pulling it back</strong> toward its original behaviour on the retain set. The tension between these two goals is where all the interesting research happens.
+    </p>
+
+    <div class="formula reveal">
+      Loss = forget_loss(model, D_f)  <span class="comment">← push away from harmful knowledge</span>
+           + α × retain_loss(model, D_r)  <span class="comment">← stay good on everything else</span>
+    </div>
+
+    <!-- ── 4. BENCHMARKS ── -->
+    <div class="section-break reveal" id="benchmarks">
+      <span class="section-num">04 — Benchmarks</span>
+    </div>
+    <h2 class="reveal">How do we measure success?</h2>
+
+    <p class="reveal">
+      This is harder than it sounds. How do you verify a model has truly forgotten something, rather than just learned to hide it? Three benchmarks dominate current research:
+    </p>
+
+    <table class="bench-table reveal">
+      <thead>
+        <tr>
+          <th>Benchmark</th>
+          <th>Forget Set</th>
+          <th>What It Tests</th>
+          <th>Venue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="bench-name">TOFU</span></td>
+          <td>200 synthetic author profiles (20 Q&amp;A each)</td>
+          <td>Can we compare against a "true" retrained model? Uses fictitious authors so a ground truth exists.</td>
+          <td>COLM 2024</td>
+        </tr>
+        <tr>
+          <td><span class="bench-name">WMDP</span></td>
+          <td>Biosecurity &amp; cybersecurity knowledge</td>
+          <td>Does the model still answer dangerous questions correctly after unlearning?</td>
+          <td>arXiv 2024</td>
+        </tr>
+        <tr>
+          <td><span class="bench-name">MUSE</span></td>
+          <td>Various (news, books)</td>
+          <td>Six-way evaluation: verbatim memory, knowledge memory, privacy leakage, utility, scalability, sustained forgetting</td>
+          <td>ICLR 2025</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3 class="reveal">Why fictitious authors in TOFU?</h3>
+    <p class="reveal">
+      A key question in unlearning is: how do you know the unlearned model is equivalent to one trained without the data in the first place? With real-world knowledge you can't retrain from scratch to check. TOFU sidesteps this by inventing synthetic author profiles — since these never existed outside the training data, you can train a comparison model from scratch and directly verify. It's a clever evaluation trick.
+    </p>
+
+    <h3 class="reveal">Why MUSE matters most</h3>
+    <p class="reveal">
+      MUSE (ICLR 2025) revealed something uncomfortable: current unlearning methods look good on simple metrics but fall apart under scrutiny. When you increase the forget set size, or ask for sequential forgetting requests over time, most methods either degrade model quality significantly or fail to actually forget. The six-way evaluation exposed this gap.
+    </p>
+
+    <div class="callout reveal">
+      <p class="callout-label">Key Finding from MUSE</p>
+      <p>Current unlearning methods scale poorly with forget set size, cannot sustainably handle sequential unlearning requests, and often significantly degrade model utility. The field is earlier-stage than published accuracy numbers suggest.</p>
+    </div>
+
+    <!-- ── 5. CHALLENGES ── -->
+    <div class="section-break reveal" id="challenges">
+      <span class="section-num">05 — Challenges</span>
+    </div>
+    <h2 class="reveal">Why is this hard?</h2>
+
+    <div class="challenge-list reveal">
+      <div class="challenge-item">
+        <span class="challenge-icon">01</span>
+        <p><strong>Knowledge is entangled.</strong> Neural networks don't store facts in labelled slots. The knowledge that "water is H₂O" and "hydrogen is explosive" are intertwined in the same weights. Forgetting one risks damaging related knowledge you want to keep.</p>
+      </div>
+      <div class="challenge-item">
+        <span class="challenge-icon">02</span>
+        <p><strong>No ground truth.</strong> You can't look inside a model and check if something is "truly" gone. Verification relies on prompting — but a clever adversary can often recover supposedly forgotten knowledge through rephrasing.</p>
+      </div>
+      <div class="challenge-item">
+        <span class="challenge-icon">03</span>
+        <p><strong>Forget vs. retain tradeoff.</strong> Aggressive forgetting tends to damage model utility. Conservative forgetting leaves traces. Finding the right balance for each use case is still largely empirical.</p>
+      </div>
+      <div class="challenge-item">
+        <span class="challenge-icon">04</span>
+        <p><strong>Refusal ≠ Unlearning.</strong> It's tempting to just train the model to refuse certain questions. But refusal training can be bypassed (e.g. by asking in past tense, or via jailbreaks). True unlearning aims to remove the knowledge, not just the willingness to share it — a much harder target.</p>
+      </div>
+    </div>
+
+    <!-- ── 6. METHODS ── -->
+    <div class="section-break reveal" id="methods">
+      <span class="section-num">06 — Key Methods</span>
+    </div>
+    <h2 class="reveal">How researchers approach it</h2>
+
+    <p class="reveal">
+      There are now many unlearning algorithms. Here are four of the most influential, explained plainly:
+    </p>
+
+    <h3 class="reveal">Gradient Ascent — the simplest idea</h3>
+    <p class="reveal">
+      Normal training minimises loss. Gradient ascent does the opposite on the forget set — it <em>maximises</em> loss, making the model progressively worse at producing the answers it once gave. Simple, but unstable: without a retain signal, the model can degrade catastrophically on unrelated topics. Think of it as selectively making the model confused, but the confusion can spread.
+    </p>
+
+    <h3 class="reveal">RMU — Representation Misdirection</h3>
+    <p class="reveal">
+      Instead of just increasing loss, RMU (from the WMDP paper) steers the model's <em>internal representations</em> of forget-set inputs toward a random, meaningless direction — like scrambling the mental picture a model builds when it reads a dangerous prompt. Meanwhile, retain-set representations are held steady against a frozen copy of the original model.
+    </p>
+    <p class="reveal">
+      A refinement, <strong>Adaptive RMU</strong> (AAAI 2025), noticed that the original RMU's scaling coefficient worked well in early transformer layers but poorly in later ones, because the magnitude of representations varies across layers. The fix: compute the scaling coefficient dynamically per layer, based on the actual norm of the frozen model's representation at that layer. A small change with meaningful results.
+    </p>
+
+    <h3 class="reveal">NPO — Negative Preference Optimisation</h3>
+    <p class="reveal">
+      Inspired by the RLHF technique called Direct Preference Optimisation (DPO), NPO reframes unlearning as a preference problem. In DPO, you train the model to prefer good responses over bad ones. NPO does the opposite for the forget set: it treats every response about the target knowledge as a "losing" response, with no "winning" response defined. The model is simply pushed to produce that response with lower and lower probability. It's more stable than raw gradient ascent because the sigmoid loss has natural bounds.
+    </p>
+
+    <h3 class="reveal">FLAT — No Retain Set Needed</h3>
+    <p class="reveal">
+      Most methods need a retain set — a collection of examples representing what the model should keep. But curating a good retain set is laborious and can itself introduce biases. FLAT (ICLR 2025) proposes an alternative: use only the forget data, paired with a "template response" (e.g., "I don't know") generated by another model. The key idea is to maximise the divergence between the model's original response and the template response, using an f-divergence objective. No retain set, no reference model — just the forget data and a target behaviour.
+    </p>
+
+    <div class="ornament reveal">· · · ·</div>
+
+    <div class="method-grid reveal">
+      <div class="method-card" data-num="①">
+        <h4>Gradient Ascent</h4>
+        <p>Maximises loss on forget set. Simple and fast, but can destabilise the model without careful regularisation.</p>
+      </div>
+      <div class="method-card" data-num="②">
+        <h4>RMU / Adaptive RMU</h4>
+        <p>Misdirects internal representations toward random noise. Adaptive version scales per-layer for better results.</p>
+      </div>
+      <div class="method-card" data-num="③">
+        <h4>NPO</h4>
+        <p>DPO-style: treats forget responses as universally bad. Stable sigmoid loss. Needs a reference model.</p>
+      </div>
+      <div class="method-card" data-num="④">
+        <h4>FLAT</h4>
+        <p>Forget-only. Pairs each forget prompt with a safe template response. No retain set required.</p>
+      </div>
+    </div>
+
+    <!-- ── 7. TAKEAWAY ── -->
+    <div class="section-break reveal" id="takeaway">
+      <span class="section-num">07 — Takeaway</span>
+    </div>
+    <h2 class="reveal">Where does this leave us?</h2>
+
+    <p class="reveal">
+      Machine unlearning for LLMs is a genuinely hard open problem — technically, legally, and philosophically. The methods above all work in narrow settings, but none has solved the core tension: you want the model to completely forget something while remaining fully capable of everything else. Those two goals pull against each other.
+    </p>
+
+    <p class="reveal">
+      What's clear from recent benchmarks like MUSE is that the field has been measuring success too optimistically. Simple ROUGE-score tests miss subtler forms of memorisation, and most methods collapse under sequential unlearning demands. The next wave of research will likely focus on scalability, verifiability (can we prove forgetting happened?), and handling overlapping knowledge more gracefully.
+    </p>
+
+    <p class="reveal">
+      From a practical standpoint — if you're building AI systems today — unlearning is not yet a drop-in solution for GDPR compliance or safety guarantees. It's a promising toolkit, not a silver bullet. The honest position is: it helps, it has tradeoffs, and we're still learning how to measure whether it worked.
+    </p>
+
+    <div class="callout blue reveal">
+      <p class="callout-label">The Deeper Question</p>
+      <p>The goal of machine unlearning isn't statistical equivalence to a retrained model. It's functional: does the model behave safely and appropriately? That reframing — from a mathematical ideal to a practical standard — may be what the field needs to move forward.</p>
+    </div>
+
+    <!-- ── REFERENCES ── -->
+    <div class="references reveal" id="references">
+      <p class="ref-title">References & Further Reading</p>
+      <ol class="ref-list">
+        <li>
+          <span class="ref-num">[1]</span>
+          <span>Li, N. et al. <em>"The WMDP Benchmark: Measuring and Reducing Malicious Use with Unlearning."</em> arXiv:2403.03218, 2024. <a href="https://arxiv.org/abs/2403.03218" target="_blank">arxiv.org/abs/2403.03218</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[2]</span>
+          <span>Maini, P. et al. <em>"TOFU: A Task of Fictitious Unlearning for LLMs."</em> COLM 2024. <a href="https://arxiv.org/abs/2401.06121" target="_blank">arxiv.org/abs/2401.06121</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[3]</span>
+          <span>Shi, W. et al. <em>"MUSE: Machine Unlearning Six-Way Evaluation for Language Models."</em> ICLR 2025. <a href="https://arxiv.org/abs/2407.06460" target="_blank">arxiv.org/abs/2407.06460</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[4]</span>
+          <span>Huu-Tien, D. et al. <em>"On Effects of Steering Latent Representation for Large Language Model Unlearning."</em> AAAI 2025. <a href="https://arxiv.org/abs/2408.06223" target="_blank">arxiv.org/abs/2408.06223</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[5]</span>
+          <span>Zhang, R. et al. <em>"Negative Preference Optimization: From Catastrophic Collapse to Effective Unlearning."</em> COLM 2024. <a href="https://arxiv.org/abs/2404.05868" target="_blank">arxiv.org/abs/2404.05868</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[6]</span>
+          <span>Wang, Y. et al. <em>"LLM Unlearning via Loss Adjustment with Only Forget Data (FLAT)."</em> ICLR 2025. <a href="https://arxiv.org/abs/2410.11143" target="_blank">arxiv.org/abs/2410.11143</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[7]</span>
+          <span>Yuan, X. et al. <em>"A Closer Look at Machine Unlearning for Large Language Models."</em> ICLR 2025. <a href="https://arxiv.org/abs/2410.08109" target="_blank">arxiv.org/abs/2410.08109</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[8]</span>
+          <span>Yao, Y. et al. <em>"Large Language Model Unlearning."</em> NeurIPS 2024. <a href="https://arxiv.org/abs/2310.10683" target="_blank">arxiv.org/abs/2310.10683</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[9]</span>
+          <span>Andriushchenko, M. &amp; Flammarion, N. <em>"Does Refusal Training in LLMs Generalise to the Past Tense?"</em> arXiv:2407.11969, 2024. <a href="https://arxiv.org/abs/2407.11969" target="_blank">arxiv.org/abs/2407.11969</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[10]</span>
+          <span>Shi, W. et al. <em>"Detecting Pretraining Data from Large Language Models (Min-K Prob)."</em> arXiv:2310.16789, 2023. <a href="https://arxiv.org/abs/2310.16789" target="_blank">arxiv.org/abs/2310.16789</a></span>
+        </li>
+        <li>
+          <span class="ref-num">[11]</span>
+          <span>Inspiration blog post: Tuan-Anh Bui, <em>"Unlearning LLMs,"</em> March 2025. <a href="https://tuananhbui89.github.io/blog/2025/unlearn-llms/" target="_blank">tuananhbui89.github.io</a></span>
+        </li>
+      </ol>
+    </div>
+
+  </article>
+</div>
+
+<footer>
+  Written for a personal portfolio &nbsp;·&nbsp; All references verified June 2026 &nbsp;·&nbsp; Topics cross-checked against published papers
+</footer>
+
+<script>
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
