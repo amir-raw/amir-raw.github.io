@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amir Faiyaz | AI Research</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ═══════════════════════════════════════════
+       THEME TOKENS
+    ═══════════════════════════════════════════ */
+    :root {
+      --transition: color 0.35s ease, background 0.35s ease, border-color 0.35s ease;
+    }
+
+    [data-theme="dark"] {
+      --bg:          #0c0d0f;
+      --bg-alt:      #111318;
+      --surface:     #161820;
+      --border:      #1e2130;
+      --border-soft: #181b25;
+      --text:        #ccc9c0;
+      --text-strong: #eeeae0;
+      --muted:       #6a6860;
+      --accent:      #c8a96e;
+      --accent2:     #6e9cc8;
+      --accent-glow: rgba(200,169,110,0.10);
+      --nav-bg:      rgba(12,13,15,0.88);
+      --tag-bg:      #13151e;
+      --code-bg:     #0f1118;
+    }
+
+    [data-theme="light"] {
+      --bg:          #f7f5f0;
+      --bg-alt:      #eeebe3;
+      --surface:     #ffffff;
+      --border:      #ddd9cf;
+      --border-soft: #e8e4db;
+      --text:        #3a3630;
+      --text-strong: #1a1714;
+      --muted:       #999188;
+      --accent:      #a07840;
+      --accent2:     #2e6898;
+      --accent-glow: rgba(160,120,64,0.08);
+      --nav-bg:      rgba(247,245,240,0.90);
+      --tag-bg:      #ede9e0;
+      --code-bg:     #eeebe3;
+    }
+
+    /* ═══════════════════════════════════════════
+       RESET & BASE
+    ═══════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      line-height: 1.75;
+      transition: var(--transition);
+    }
+    a { color: inherit; text-decoration: none; }
+    strong { color: var(--text-strong); font-weight: 500; }
+
+    /* ═══════════════════════════════════════════
+       NAVBAR
+    ═══════════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.8rem;
+      height: 60px;
+      background: var(--nav-bg);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .nav-links {
+      display: flex;
+      gap: 2.4rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* Theme toggle */
+    .theme-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      background: none;
+      border: 1px solid var(--border);
+      padding: 0.3rem 0.8rem;
+      border-radius: 2px;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      transition: var(--transition), color 0.2s;
+    }
+    .theme-toggle:hover { color: var(--accent); border-color: var(--accent); }
+    .toggle-icon { font-size: 0.9rem; }
+
+    /* ═══════════════════════════════════════════
+       LAYOUT HELPERS
+    ═══════════════════════════════════════════ */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+    section {
+      padding: 7rem 0 5rem;
+      border-bottom: 1px solid var(--border-soft);
+    }
+    section:last-of-type { border-bottom: none; }
+
+    .section-number {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--accent);
+      margin-bottom: 0.8rem;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      color: var(--text-strong);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      margin-bottom: 2.8rem;
+    }
+
+    /* divider */
+    .rule {
+      width: 2.5rem;
+      height: 1px;
+      background: var(--accent);
+      margin: 1.4rem 0 2.4rem;
+    }
+
+    /* ═══════════════════════════════════════════
+       HERO
+    ═══════════════════════════════════════════ */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 0 5rem;
+      border-bottom: 1px solid var(--border-soft);
+      position: relative;
+      overflow: hidden;
+    }
+    #hero::before {
+      content: '';
+      position: absolute;
+      top: -20%; right: -15%;
+      width: 55vw; height: 55vw;
+      border-radius: 50%;
+      background: radial-gradient(ellipse, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-kicker {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.4rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.1s ease forwards;
+    }
+    .hero-name {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3.2rem, 7vw, 6rem);
+      font-weight: 700;
+      color: var(--text-strong);
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+      margin-bottom: 0.3rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.22s ease forwards;
+    }
+    .hero-tagline {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: clamp(0.72rem, 1.4vw, 0.9rem);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.34s ease forwards;
+    }
+    .hero-bio {
+      max-width: 520px;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 2.8rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.46s ease forwards;
+    }
+    .hero-bio em {
+      color: var(--accent);
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+    }
+    .hero-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.58s ease forwards;
+    }
+    .hero-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.5rem 1.1rem;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+    }
+    .hero-link:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .hero-link.primary {
+      color: var(--bg);
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+    .hero-link.primary:hover { opacity: 0.85; }
+
+    /* scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem; left: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      opacity: 0;
+      animation: fadeUp 0.7s 0.9s ease forwards;
+    }
+    .scroll-line {
+      width: 2rem; height: 1px;
+      background: var(--muted);
+      animation: lineGrow 1.4s 1.2s ease forwards;
+      transform-origin: left;
+      transform: scaleX(0);
+    }
+    @keyframes lineGrow { to { transform: scaleX(1); } }
+
+    /* ═══════════════════════════════════════════
+       ABOUT
+    ═══════════════════════════════════════════ */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .about-text p { margin-bottom: 1.1rem; font-size: 0.97rem; }
+    .about-text p:last-child { margin-bottom: 0; }
+
+    .about-facts { display: flex; flex-direction: column; gap: 1rem; }
+    .fact-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1rem 1.3rem;
+      display: grid;
+      grid-template-columns: 0.9rem 1fr;
+      gap: 0.8rem;
+      align-items: start;
+      transition: border-color 0.2s;
+    }
+    .fact-item:hover { border-color: var(--accent); }
+    .fact-bullet {
+      width: 5px; height: 5px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-top: 0.55rem;
+      flex-shrink: 0;
+    }
+    .fact-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.2rem;
+    }
+    .fact-value { font-size: 0.9rem; color: var(--text); line-height: 1.55; }
+
+    /* ═══════════════════════════════════════════
+       RESEARCH
+    ═══════════════════════════════════════════ */
+    .pub-list { display: flex; flex-direction: column; }
+    .pub-item {
+      display: grid;
+      grid-template-columns: 3.5rem 1fr auto;
+      gap: 1.2rem;
+      align-items: baseline;
+      padding: 1.3rem 0;
+      border-bottom: 1px solid var(--border-soft);
+      transition: background 0.2s;
+    }
+    .pub-item:first-child { border-top: 1px solid var(--border-soft); }
+    .pub-item:hover { background: var(--accent-glow); margin: 0 -1.2rem; padding-left: 1.2rem; padding-right: 1.2rem; }
+    .pub-year {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+    }
+    .pub-title {
+      font-size: 0.95rem;
+      color: var(--text-strong);
+      line-height: 1.5;
+    }
+    .pub-arrow {
+      font-size: 0.8rem;
+      color: var(--muted);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .pub-item:hover .pub-arrow { opacity: 1; color: var(--accent); }
+
+    .research-note {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.04em;
+    }
+
+    /* ═══════════════════════════════════════════
+       LOVE TO DO
+    ═══════════════════════════════════════════ */
+    .love-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+    }
+    .love-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.6rem 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.25s, transform 0.25s;
+    }
+    .love-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .love-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .love-card:hover::before { transform: scaleX(1); }
+    .love-icon {
+      font-size: 1.5rem;
+      margin-bottom: 0.9rem;
+      display: block;
+    }
+    .love-card h4 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .love-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+    /* ═══════════════════════════════════════════
+       BLOG SECTION
+    ═══════════════════════════════════════════ */
+    .blog-grid { display: flex; flex-direction: column; gap: 1.2rem; }
+    .blog-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 1.8rem 2rem;
+      cursor: pointer;
+      transition: border-color 0.25s, background 0.25s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .blog-card:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .blog-card.featured { border-color: var(--accent); }
+    .blog-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 0.6rem;
+    }
+    .blog-tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      padding: 0.15rem 0.55rem;
+      border-radius: 2px;
+    }
+    .blog-date {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .blog-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text-strong);
+      line-height: 1.3;
+      margin-bottom: 0.5rem;
+    }
+    .blog-excerpt { font-size: 0.88rem; color: var(--muted); line-height: 1.6; max-width: 540px; }
+    .blog-arrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1.2rem;
+      color: var(--accent);
+      opacity: 0.4;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .blog-card:hover .blog-arrow { opacity: 1; transform: translateX(4px); }
+
+    .blog-coming {
+      opacity: 0.5;
+      cursor: default;
+    }
+    .blog-coming:hover { border-color: var(--border); background: var(--surface); }
+    .blog-coming .blog-arrow { display: none; }
+    .coming-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      padding: 0.15rem 0.55rem;
+      border-radius: 2px;
+    }
+
+    /* ═══════════════════════════════════════════
+       CONTACT
+    ═══════════════════════════════════════════ */
+    #contact {
+      border-bottom: none;
+    }
+    .contact-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    .contact-text p { font-size: 0.95rem; margin-bottom: 1.2rem; }
+    .contact-links { display: flex; flex-direction: column; gap: 0.8rem; }
+    .contact-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.3rem;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .contact-link:hover {
+      border-color: var(--accent);
+      background: var(--accent-glow);
+    }
+    .contact-link-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .contact-link-val { font-size: 0.88rem; color: var(--muted); }
+
+    /* ═══════════════════════════════════════════
+       FOOTER
+    ═══════════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: var(--bg-alt);
+      transition: var(--transition);
+    }
+    .footer-name {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+    }
+    .footer-note {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+
+    /* ═══════════════════════════════════════════
+       ANIMATIONS
+    ═══════════════════════════════════════════ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .reveal {
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    /* ═══════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════ */
+    @media (max-width: 720px) {
+      nav { padding: 0 1.2rem; }
+      .nav-links { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .love-grid { grid-template-columns: 1fr 1fr; }
+      .contact-inner { grid-template-columns: 1fr; gap: 2rem; }
+      .blog-card { grid-template-columns: 1fr; }
+      .blog-arrow { display: none; }
+    }
+    @media (max-width: 480px) {
+      .love-grid { grid-template-columns: 1fr; }
+      .pub-item { grid-template-columns: 2.8rem 1fr; }
+      .pub-arrow { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAVBAR
+═══════════════════════════════════════════ -->
+<nav>
+  <span class="nav-logo">AF</span>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#research">Research</a></li>
+    <li><a href="#blog">Blog</a></li>
+    <li><a href="#loves">Interests</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+    <span class="toggle-icon" id="toggle-icon">○</span>
+    <span id="toggle-label">Light</span>
+  </button>
+</nav>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<section id="hero">
+  <div class="container">
+    <p class="hero-kicker">PhD Candidate · Texas Tech University</p>
+    <h1 class="hero-name">Amir<br>Faiyaz</h1>
+    <p class="hero-tagline">Building Trustworthy AI Systems</p>
+    <p class="hero-bio">
+      I research the intersection of <em>Federated Learning</em>, Large Language Models, and
+      privacy-preserving AI — with a focus on making distributed AI systems secure against
+      adversarial attacks, without sacrificing what makes them useful.
+    </p>
+    <div class="hero-links">
+      <a href="mailto:afaiyaz@ttu.edu" class="hero-link primary">Email Me</a>
+      <a href="https://linkedin.com/in/amir-faiyaz" class="hero-link" target="_blank">LinkedIn</a>
+      <a href="https://github.com/amir-raw" class="hero-link" target="_blank">GitHub</a>
+      <a href="#research" class="hero-link">View Research</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <span class="scroll-line"></span>
+    Scroll
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     ABOUT
+═══════════════════════════════════════════ -->
+<section id="about">
+  <div class="container">
+    <div class="section-number reveal">01</div>
+    <h2 class="section-title reveal">About</h2>
+
+    <div class="about-grid">
+      <div class="about-text reveal">
+        <p>
+          I'm a PhD candidate at Texas Tech University working at the frontier of
+          <strong>Federated Learning</strong> and <strong>Large Language Models</strong>.
+          My core question: how do we build AI systems that are both powerful and
+          trustworthy — especially when the data, the compute, and the people are all distributed?
+        </p>
+        <p>
+          My current work focuses on <strong>adversarial robustness</strong> in FL-LLM pipelines —
+          specifically model poisoning attacks, explanation-guided defences, and
+          privacy-preserving aggregation strategies. I'm also exploring
+          <strong>machine unlearning</strong> as a path toward verifiable, regulation-compliant AI.
+        </p>
+        <p>
+          Before the PhD I spent time with sensor data and deep learning for
+          human activity recognition — which gave me a healthy appreciation for
+          the messy gap between benchmark performance and real-world deployment.
+        </p>
+      </div>
+      <div class="about-facts reveal">
+        <div class="fact-item">
+          <div><div class="fact-bullet"></div></div>
+          <div>
+            <p class="fact-label">Position</p>
+            <p class="fact-value">PhD Candidate, Computer Science</p>
+          </div>
+        </div>
+        <div class="fact-item">
+          <div><div class="fact-bullet"></div></div>
+          <div>
+            <p class="fact-label">Institution</p>
+            <p class="fact-value">Texas Tech University, Lubbock TX</p>
+          </div>
+        </div>
+        <div class="fact-item">
+          <div><div class="fact-bullet"></div></div>
+          <div>
+            <p class="fact-label">Research Focus</p>
+            <p class="fact-value">Federated LLMs · Adversarial ML · Privacy-preserving AI</p>
+          </div>
+        </div>
+        <div class="fact-item">
+          <div><div class="fact-bullet"></div></div>
+          <div>
+            <p class="fact-label">Currently Exploring</p>
+            <p class="fact-value">Machine Unlearning · Explainability-guided defences</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     RESEARCH
+═══════════════════════════════════════════ -->
+<section id="research">
+  <div class="container">
+    <div class="section-number reveal">02</div>
+    <h2 class="section-title reveal">Research</h2>
+
+    <div class="pub-list reveal">
+      <div class="pub-item">
+        <span class="pub-year">2025</span>
+        <span class="pub-title">Where to Strike? Explanation-Guided Layer Selection for Poisoning Federated LLMs</span>
+        <span class="pub-arrow">→</span>
+      </div>
+      <div class="pub-item">
+        <span class="pub-year">2025</span>
+        <span class="pub-title">A Study of Model Poisoning Attacks on Federated Large Language Models</span>
+        <span class="pub-arrow">→</span>
+      </div>
+      <div class="pub-item">
+        <span class="pub-year">2025</span>
+        <span class="pub-title">XAI-Driven Input Masking to Mitigate Model Inversion Attacks</span>
+        <span class="pub-arrow">→</span>
+      </div>
+      <div class="pub-item">
+        <span class="pub-year">2025</span>
+        <span class="pub-title">Selective Layer Adaptive Attacks Against Federated Large Language Models</span>
+        <span class="pub-arrow">→</span>
+      </div>
+      <div class="pub-item">
+        <span class="pub-year">2025</span>
+        <span class="pub-title">GradualDiff-Fed: A Federated Learning Specialized Framework for Large Language Models</span>
+        <span class="pub-arrow">→</span>
+      </div>
+      <div class="pub-item">
+        <span class="pub-year">2024</span>
+        <span class="pub-title">Dominance of Deep LSTM in Smartphone Sensor based Human Activity Classification</span>
+        <span class="pub-arrow">→</span>
+      </div>
+    </div>
+
+    <p class="research-note reveal">// All papers available on request — afaiyaz@ttu.edu</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     BLOG
+═══════════════════════════════════════════ -->
+<section id="blog">
+  <div class="container">
+    <div class="section-number reveal">03</div>
+    <h2 class="section-title reveal">Writing</h2>
+
+    <div class="blog-grid">
+
+      <!-- Published -->
+      <a href="unlearning-llm-blog.html" class="blog-card featured reveal">
+        <div>
+          <div class="blog-meta">
+            <span class="blog-tag">Machine Unlearning</span>
+            <span class="blog-tag">LLM Safety</span>
+            <span class="blog-date">June 2026</span>
+          </div>
+          <p class="blog-title">Unlearning LLMs</p>
+          <p class="blog-excerpt">
+            What does it mean to make an AI forget? A plain-English deep-dive into machine
+            unlearning — why it matters for safety and privacy, how it's measured, and the
+            key algorithmic approaches from Gradient Ascent to Adaptive RMU.
+          </p>
+        </div>
+        <span class="blog-arrow">→</span>
+      </a>
+
+      <!-- Coming soon: Federated Poisoning -->
+      <div class="blog-card blog-coming reveal">
+        <div>
+          <div class="blog-meta">
+            <span class="blog-tag">Federated Learning</span>
+            <span class="coming-label">Coming Soon</span>
+          </div>
+          <p class="blog-title">Poisoning Federated LLMs — From Theory to Practice</p>
+          <p class="blog-excerpt">
+            A look at how model poisoning attacks work against distributed LLM fine-tuning,
+            and why the layer you target changes everything.
+          </p>
+        </div>
+      </div>
+
+      <!-- Coming soon: XAI -->
+      <div class="blog-card blog-coming reveal">
+        <div>
+          <div class="blog-meta">
+            <span class="blog-tag">Explainability</span>
+            <span class="coming-label">Coming Soon</span>
+          </div>
+          <p class="blog-title">Using XAI to Build Better Defences</p>
+          <p class="blog-excerpt">
+            How explainability tools like SHAP and LIME can do more than explain models —
+            they can be used to mask vulnerable inputs and reduce attack surface area.
+          </p>
+        </div>
+      </div>
+
+      <!-- Coming soon: Privacy -->
+      <div class="blog-card blog-coming reveal">
+        <div>
+          <div class="blog-meta">
+            <span class="blog-tag">Privacy · AI Law</span>
+            <span class="coming-label">Coming Soon</span>
+          </div>
+          <p class="blog-title">The Right to Be Forgotten in the Age of LLMs</p>
+          <p class="blog-excerpt">
+            GDPR Article 17 was written before LLMs existed. What happens when you ask
+            a neural network to delete someone, and how close is the field to an answer?
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     LOVES / INTERESTS
+═══════════════════════════════════════════ -->
+<section id="loves">
+  <div class="container">
+    <div class="section-number reveal">04</div>
+    <h2 class="section-title reveal">Beyond Research</h2>
+
+    <div class="love-grid">
+
+      <div class="love-card reveal">
+        <span class="love-icon">🥾</span>
+        <h4>Hiking & Trails</h4>
+        <p>Finding perspective on long trails. The problems that feel stuck in the lab have a way of untangling themselves somewhere on an empty ridge.</p>
+      </div>
+
+      <div class="love-card reveal">
+        <span class="love-icon">🎮</span>
+        <h4>Esports & Strategy</h4>
+        <p>Former competitive gamer. Strategy games taught me to think in systems — something that transfers surprisingly well to adversarial ML research.</p>
+      </div>
+
+      <div class="love-card reveal">
+        <span class="love-icon">📖</span>
+        <h4>Writing to Think</h4>
+        <p>This blog is my attempt to turn complex research into clear explanations. If I can't explain it simply, I probably don't understand it well enough yet.</p>
+      </div>
+
+      <div class="love-card reveal">
+        <span class="love-icon">🔬</span>
+        <h4>Tinkering with Models</h4>
+        <p>Running experiments outside formal research — probing model internals, testing jailbreak robustness, seeing what breaks and what doesn't.</p>
+      </div>
+
+      <div class="love-card reveal">
+        <span class="love-icon">🌐</span>
+        <h4>Open Knowledge</h4>
+        <p>Believing that good AI research should be accessible. Writing publicly, sharing code, and making the field legible to people outside it.</p>
+      </div>
+
+      <div class="love-card reveal">
+        <span class="love-icon">☕</span>
+        <h4>Good Coffee, Long Reads</h4>
+        <p>Some of the best thinking happens away from the screen. Dense papers, technical books, the occasional novel — offline focus time is non-negotiable.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     CONTACT
+═══════════════════════════════════════════ -->
+<section id="contact">
+  <div class="container">
+    <div class="section-number reveal">05</div>
+    <h2 class="section-title reveal">Get in Touch</h2>
+
+    <div class="contact-inner">
+      <div class="contact-text reveal">
+        <p>
+          I'm always open to conversations about research, collaboration, or questions
+          about Federated Learning and LLM security. If you're working on something
+          in the same space — reach out.
+        </p>
+        <p>
+          For academic collaboration, I'm particularly interested in connecting with
+          people working on <strong>verifiable unlearning</strong>,
+          <strong>private aggregation protocols</strong>, and
+          <strong>adversarial robustness</strong> in distributed settings.
+        </p>
+      </div>
+      <div class="contact-links reveal">
+        <a href="mailto:afaiyaz@ttu.edu" class="contact-link">
+          <span class="contact-link-label">Email</span>
+          <span class="contact-link-val">afaiyaz@ttu.edu</span>
+        </a>
+        <a href="https://linkedin.com/in/amir-faiyaz" target="_blank" class="contact-link">
+          <span class="contact-link-label">LinkedIn</span>
+          <span class="contact-link-val">/in/amir-faiyaz</span>
+        </a>
+        <a href="https://github.com/amir-raw" target="_blank" class="contact-link">
+          <span class="contact-link-label">GitHub</span>
+          <span class="contact-link-val">amir-raw</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer>
+  <span class="footer-name">Amir Faiyaz</span>
+  <span class="footer-note">PhD · Texas Tech University · Building Trustworthy AI</span>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════ -->
+<script>
+  /* ── Theme toggle ── */
+  function toggleTheme() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    document.getElementById('toggle-icon').textContent = isDark ? '●' : '○';
+    document.getElementById('toggle-label').textContent = isDark ? 'Dark' : 'Light';
+    localStorage.setItem('theme', isDark ? 'light' : 'dark');
+  }
+
+  // Restore saved preference
+  const saved = localStorage.getItem('theme');
+  if (saved && saved !== 'dark') {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.getElementById('toggle-icon').textContent = '●';
+    document.getElementById('toggle-label').textContent = 'Dark';
+  }
+
+  /* ── Scroll reveal ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.07, rootMargin: '0px 0px -30px 0px' });
+
+  document.querySelectorAll('.reveal').forEach((el, i) => {
+    el.style.transitionDelay = `${(i % 4) * 0.08}s`;
+    observer.observe(el);
+  });
+
+  /* ── Active nav highlight ── */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          link.style.color = '';
+          if (link.getAttribute('href') === '#' + entry.target.id) {
+            link.style.color = 'var(--accent)';
+          }
+        });
+      }
+    });
+  }, { threshold: 0.4 });
+
+  sections.forEach(s => navObserver.observe(s));
+</script>
+
+</body>
+</html>
